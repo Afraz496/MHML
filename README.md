@@ -4,7 +4,7 @@ This repository contains all the work done for the StudyBuddy application as par
 
 - Afraz Arif Khan
 - Stefan Karlocik
-- Tomas Pullman
+- Tomas Pulmann
 - Maria Irene Gonzalez
 - Deloris Owusu
 - Malhar Jajoo
