@@ -1,0 +1,4 @@
+#Tue Feb 06 19:41:56 GMT 2018
+base.0=/home/pufik/mhml/face-detection2/openCVSamplefacedetection/build/intermediates/transforms/dexMerger/debug/38
+path.0=classes.dex
+renamed.0=classes.dex
