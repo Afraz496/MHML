@@ -5,12 +5,12 @@
           android:versionName="2.1">
 
     <application
-        android:label="@string/app_name"
+        android:label="StudyBuddy"
         android:icon="@drawable/icon"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
 
         <activity android:name="FdActivity"
-                  android:label="@string/app_name"
+                  android:label="StudyBuddy"
                   android:screenOrientation="landscape"
                   android:configChanges="keyboardHidden|orientation">
             <intent-filter>
