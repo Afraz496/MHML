@@ -1,0 +1,117 @@
+# OSX/Linux (https://github.com/travis-ci-tester/toolchain-table)
+
+# Workaround for https://github.com/travis-ci/travis-ci/issues/8363
+language:
+  - minimal
+
+# Container-based infrastructure (Linux)
+# * https://docs.travis-ci.com/user/migrating-from-legacy/#How-can-I-use-container-based-infrastructure%3F
+sudo:
+  - false
+
+dist:
+  - trusty
+
+# Install packages differs for container-based infrastructure
+# * https://docs.travis-ci.com/user/migrating-from-legacy/#How-do-I-install-APT-sources-and-packages%3F
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-5.0
+    packages:
+      # For Qt
+      - libegl1-mesa-dev
+
+      # For ogles_gpgpu (GL library)
+      - libgl1-mesa-dev
+
+      # Packages for Android development: http://superuser.com/a/360398/252568
+      - libncurses5:i386
+      - libstdc++6:i386
+      - zlib1g:i386
+
+      # Default GCC 4.8 is buggy:
+      # * https://github.com/elucideye/drishti/issues/273#issuecomment-301297286
+      - g++-5
+      - gcc-5
+
+      - clang-5.0
+      - libc++-dev
+      - libc++abi-dev
+      - libclang-5.0-dev
+      - libclang-common-5.0-dev
+      - libclang1-5.0
+
+      # pip3
+      - python3-pip
+
+env:
+  global:
+    - secure: "VsEvjGdwEpr+MvCpvi6C0GuEV97NBpe4fR5Oni+9cbmv4HyKBMnQKqedVJFvWk70Yb/XUeFJ/hBaTX/q4tItegEJ4bNt2La365ng+T/vML8l1lY19VdRYrbEK9fuZq1ozS6DEDYtmWidufIX1mixYnL1Yyq2cchvs+T9wjclTAvInfMiLveCV4BJmdj8EMxS7QibYKSVpYkxBj4/pc6z0HxbPjgYnUREUbN67mZ1Bf9T/2PqQdeub3qWAG36kwsZ2BmzXUhiJ0XytCMVNGJ2sQbg47lt5aXNFtv5N79Z2GEqV+Yw0EaaQ2PLZOf7HKzFQTco8j5KbhVIoJr7cv9ST0gHQSHwZr+bINWn+frUHzYOO8nlu7nciDT5LCSZ9YRVIzzB1dTn7w82LZiBh1cr4OdhE5uDSHyEdtlkqKzVn4CpIgmPBXUhRjZPIn9hq7PQYc7wleO0ssqzQ/kYw9VSchhFDhPE/QBRkSbvD+eCPCOGP5cpAzpI5OvDa7if+0McIrMVmLx718Uf00MZ7r3FsJMDnAjJlnKog2Rn17Rhl7UCsvhxl7vtxsoSo9ohhvzBWIe0fT2gOsg8rSZ0R+s666DlhGIffyzWqqv8SfAQKo0sfcE9op/c3HF6NAKxHLuxAkAyJ2qFWKkJ017wpYhJx5cz6LHC3x24ahHNi2dqIJY="
+
+matrix:
+  include:
+    # Linux {
+
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=libcxx-fpic-hid-sections INSTALL=--strip
+
+    - os: linux
+      env: CONFIG=Release TOOLCHAIN=gcc-5-pic-hid-sections-lto INSTALL=--strip
+
+    # }
+
+    # OSX {
+
+    - os: osx
+      osx_image: xcode8.3
+      env: CONFIG=Release TOOLCHAIN=osx-10-12-hid-sections INSTALL=--install
+
+    - os: osx
+      osx_image: xcode8.3
+      env: CONFIG=MinSizeRel TOOLCHAIN=ios-nocodesign-10-3-arm64-dep-9-0-device-libcxx-hid-sections INSTALL=--install
+
+    - os: osx
+      osx_image: xcode8.3
+      env: CONFIG=Release TOOLCHAIN=osx-10-12-sanitize-address-hid-sections INSTALL=--install
+
+    - os: osx
+      env: CONFIG=MinSizeRel TOOLCHAIN=android-ndk-r10e-api-19-armeabi-v7a-neon-hid-sections INSTALL=--strip
+
+    # }
+
+# disable the default submodule logic to support local modification of .gitmodules paths
+git:
+  submodules: false
+
+# See https://docs.travis-ci.com/user/private-dependencies/#API-Token
+# CI_USER_TOKEN is added to .travis.yml settings
+
+before_install:
+
+  - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then mkdir -p latest-clang-symlinks && ln -s /usr/bin/clang-5.0 latest-clang-symlinks/clang && ln -s /usr/bin/clang++-5.0 latest-clang-symlinks/clang++ && export PATH="$PWD/latest-clang-symlinks:$PATH"; fi
+
+install:
+  - source bin/hunter_env.sh
+
+script:
+  - bin/drishti_build.sh "${TOOLCHAIN}" "${CONFIG}" "${INSTALL}"
+
+before_deploy:
+    - gem install mime-types -v 2.6.2 # workaround for https://github.com/travis-ci/travis-ci/issues/5145
+    - export FILE_TO_UPLOAD=$(ls _archives/drishti-*.tar.gz)
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "Ff1/kumLxjTf7ZND+yKJeZ8vS+jFCGPeXCFEIk3yZ8TiPxJmgmoMP56jWdR94WyAlqNroIvlAevSdtH/Lw7Qcu3MRcqFG64N7FBZz//UqpXZD4L12RcWDmtj8Jgk5t+Cty5nbuviYJ3sgk2Us4W0ykEE5Ot0E1M+oudWTuSDYihGlX7MEghyixxZCpO1uUYc16T8MHLus/NbBPONZsZ4UU3iUTojgqnhxc38gFmRSplk6FeFKL8JRZpZBXHgp/YdWTIpQWWvkQ1uRnk2l47n2pLTUPLyiIhG9o6WP9B5lGfvpiLGM/xUzmVYG09FZ6qM2R5oD+QHnQ+35oqhq/qTC+sg6yz1Lv4AXYQlhoS/yNne+w0E/N2Neh26oDEevPFQBltV25s6h7hZsjpGKNGNCDSXHEpV5Gn58C0E+dr6iTT20CbsT6zw/z1+n6z7OJlAuLLl0duKKsQ8pC3ngqHsn8OFmOYTtkAG6SU6mQZxMmJ5WlMwD85MlsEDIJwX/8dsW2aFSH5yPYiS0j6hbTQPD0lKYRr8czEzqPEd39A0yvwT81gQhcgoCDSui1jibd91paCFE9IpmV8YMPPV24GGlSKIqDWGbtacyuPXinQa+hW0bICqDfjh9nhRwBH9WqxjNBBZ09uX/8scke5pA3LcyfeXtmIAu4rHl7y8jU4B4WE="
+  file_glob: true
+  file: "${FILE_TO_UPLOAD}"
+  skip_cleanup: true
+  on:
+    tags: true
+
+branches:
+  except:
+    - /^pr\..*/

@@ -1,0 +1,45 @@
+image: Visual Studio 2015
+
+environment:
+  global:
+    GITHUB_USER_PASSWORD:
+      secure: x43zgAFmaHoqWwNDZEVzMvEWQSkHojfRWnVGMnmQziw9ozwrJTEnZdz5QD39bXMv
+
+  matrix:
+
+    - TOOLCHAIN: "vs-14-2015-sdk-8-1"
+      CONFIG: Release
+
+    - TOOLCHAIN: "vs-14-2015-sdk-8-1"
+      CONFIG: Debug
+
+    - TOOLCHAIN: "vs-14-2015-win64-sdk-8-1"
+      CONFIG: Release
+
+    - TOOLCHAIN: "vs-14-2015-win64-sdk-8-1"
+      CONFIG: Debug
+
+install:
+  - cmd: bin\hunter_env.cmd
+
+build_script:
+
+  - cmd: bin\build-appveyor.cmd "%CONFIG%" "%TOOLCHAIN%"
+
+artifacts:
+  - path: _archives\drishti-*.tar.gz
+    name: Releases
+
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: "x43zgAFmaHoqWwNDZEVzMvEWQSkHojfRWnVGMnmQziw9ozwrJTEnZdz5QD39bXMv"
+  artifact: /drishti-.*\.tar.gz/
+  draft: false
+  prerelease: false
+  on:
+    appveyor_repo_tag: true
+
+branches:
+  except:
+    - /^pr\..*/
