@@ -1,0 +1,38 @@
+[
+    {
+        "merged": "/Users/ire/Downloads/eyeTrackSample-master/eyeTrackSample/build/intermediates/res/merged/debug/drawable_icon.png.flat",
+        "source": "/Users/ire/Downloads/eyeTrackSample-master/eyeTrackSample/src/main/res/drawable/icon.png"
+    },
+    {
+        "merged": "/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/build/intermediates/res/merged/debug/raw_haarcascade_frontalface_alt.xml.flat",
+        "source": "/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/src/main/res/raw/haarcascade_frontalface_alt.xml"
+    },
+    {
+        "merged": "/Users/ire/Downloads/eyeTrackSample-master/eyeTrackSample/build/intermediates/res/merged/debug/raw_lbpcascade_frontalface.xml.flat",
+        "source": "/Users/ire/Downloads/eyeTrackSample-master/eyeTrackSample/src/main/res/raw/lbpcascade_frontalface.xml"
+    },
+    {
+        "merged": "/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/build/intermediates/res/merged/debug/drawable_icon.png.flat",
+        "source": "/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/src/main/res/drawable/icon.png"
+    },
+    {
+        "merged": "/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/build/intermediates/res/merged/debug/raw_haarcascade_lefteye_2splits.xml.flat",
+        "source": "/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/src/main/res/raw/haarcascade_lefteye_2splits.xml"
+    },
+    {
+        "merged": "/Users/ire/Downloads/eyeTrackSample-master/eyeTrackSample/build/intermediates/res/merged/debug/layout_face_detect_surface_view.xml.flat",
+        "source": "/Users/ire/Downloads/eyeTrackSample-master/eyeTrackSample/src/main/res/layout/face_detect_surface_view.xml"
+    },
+    {
+        "merged": "/Users/ire/Downloads/eyeTrackSample-master/eyeTrackSample/build/intermediates/res/merged/debug/raw_haarcascade_lefteye_2splits.xml.flat",
+        "source": "/Users/ire/Downloads/eyeTrackSample-master/eyeTrackSample/src/main/res/raw/haarcascade_lefteye_2splits.xml"
+    },
+    {
+        "merged": "/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/build/intermediates/res/merged/debug/layout_face_detect_surface_view.xml.flat",
+        "source": "/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/src/main/res/layout/face_detect_surface_view.xml"
+    },
+    {
+        "merged": "/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/build/intermediates/res/merged/debug/raw_lbpcascade_frontalface.xml.flat",
+        "source": "/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/src/main/res/raw/lbpcascade_frontalface.xml"
+    }
+]

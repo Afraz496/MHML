@@ -1,0 +1,4 @@
+#Sun Feb 18 11:38:37 GMT 2018
+base.0=/Users/ire/Documents/Imperial/Year 4/MHML/Computer Vision Code/Code Samples/eyeTrackSample-ire/eyeTrackSample/build/intermediates/transforms/dexMerger/debug/1015
+path.0=classes.dex
+renamed.0=classes.dex
