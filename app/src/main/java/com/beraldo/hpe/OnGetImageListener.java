@@ -46,6 +46,15 @@ public class OnGetImageListener implements OnImageAvailableListener {
     private static final int IMAGE_MEAN = 117;
     private static final String TAG = "OnGetImageListener";
 
+    private static final double maxYaw = 20;
+    private static final double minYaw = -20;
+    private static final double minPitch = -10;
+
+    private enum State {NOT_THERE, NOT_PAYING_ATTENTION, PAYING_ATTENTION};
+    private State mState = State.NOT_THERE;
+
+    private boolean VFOA = false;
+
     private int mScreenRotation = 0;
 
     private int mPreviewWdith = 0;
@@ -253,12 +262,31 @@ public class OnGetImageListener implements OnImageAvailableListener {
                                 public void run() {
                                     mResultsView.setText("Gaze angles\nYaw: " + df.format(r.getYaw()) +
                                             "\nPitch: " + df.format(r.getPitch()) +
-                                            "\nRoll: " + df.format(r.getRoll()));
+                                            "\nRoll: " + df.format(r.getRoll()) +
+                                            "\nState: " + mState.toString());
                                 }
                             });
+
+                            VFOA = r.getYaw() < maxYaw && r.getYaw() > minYaw && r.getPitch() > minPitch;
+                            if (VFOA)
+                                mState = State.PAYING_ATTENTION;
+                            else
+                                mState = State.NOT_PAYING_ATTENTION;
+
                             if(MainActivity.saveFile) XMLWriter.addResult(detectionDocument, System.currentTimeMillis(), r.getYaw(), r.getPitch(), r.getRoll());
                         }
-
+                        else {
+                            mState = State.NOT_THERE;
+                            ((Activity) mContext).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mResultsView.setText("Gaze angles\nYaw: ??"  +
+                                            "\nPitch: ??" +
+                                            "\nRoll: ??"  +
+                                            "\nState: " + mState.toString());
+                                }
+                            });
+                        }
                         mWindow.setRGBBitmap(mRGBrotatedBitmap);
                         mIsComputing = false;
                     }
