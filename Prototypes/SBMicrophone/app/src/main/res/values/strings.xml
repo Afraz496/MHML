@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Ambient Noise</string>
+    <string name="start_session">Start Session</string>
+    <string name="start_dBmeter">Measure Decibels</string>
+    <string name="stop_dBmeter">STOP</string>
+    <string name="recordbtn">Record Session</string>
+</resources>
