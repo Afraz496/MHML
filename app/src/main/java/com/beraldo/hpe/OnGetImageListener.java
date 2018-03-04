@@ -88,7 +88,12 @@ public class OnGetImageListener implements OnImageAvailableListener {
     private static final double minPitch = -10;
 
     private enum State {NOT_THERE, NOT_PAYING_ATTENTION, PAYING_ATTENTION};
-    private State mState = State.NOT_THERE;
+    private State mState = State.PAYING_ATTENTION;
+    private State mPreviousState = State.PAYING_ATTENTION;
+    private State mOutputState = State.PAYING_ATTENTION;
+
+    private long tStart;
+    private long tDelta;
 
     private boolean hVFOA = false;
     private boolean eVFOA = false;
@@ -182,9 +187,16 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
     Rect[] facesArrayTF;
 
+    private float userBias = 0f;
+
     private List<Classifier.Recognition> mappedRecognitions;
 
     private boolean lookingDown = true;
+
+    private org.opencv.core.Point ext_iris = new org.opencv.core.Point();
+
+    private final long timeOutAttention = 5000;
+    private final long timeOutPresence = 2000;
 
     // end
 
@@ -232,6 +244,8 @@ public class OnGetImageListener implements OnImageAvailableListener {
         // Initialize the formatter for the strings to be shown
         df = new DecimalFormat("##.##");
         df.setRoundingMode(RoundingMode.DOWN);
+
+        tStart = System.currentTimeMillis();
 
         if(MainActivity.saveFile) detectionDocument = XMLWriter.newDocument(MainActivity.mode);
 
@@ -404,6 +418,8 @@ public class OnGetImageListener implements OnImageAvailableListener {
             iris.x = mmG.minLoc.x + eye_only_rectangle.x;
             iris.y = mmG.minLoc.y + eye_only_rectangle.y;
 
+            ext_iris = iris;
+
             eye_template = new Rect((int) iris.x - size / 2, (int) iris.y
                     - size / 2, size, size);
             template = (mGray.submat(eye_template)).clone();
@@ -546,7 +562,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
                 teplateR = get_template(mJavaDetectorEye, eyearea_right, 24);
                 teplateL = get_template(mJavaDetectorEye, eyearea_left, 24);
                 learn_frames++;
-            } else {
+            } else if (learn_frames >= 5 && learn_frames < 10) {
                 // Learning finished, use the new templates for template
                 // matching
                 get_eye_rect(mJavaDetectorEye, eyearea_right);
@@ -554,10 +570,21 @@ public class OnGetImageListener implements OnImageAvailableListener {
                  //FACE_RECT_COLOR, 2);
                 match_eye(eyearea_right, teplateR, method, true);
                 match_eye(eyearea_left, teplateL, method, false);
+                userBias += (ext_eyes_only_rect.y - ext_iris.y) / 5.0;
+                learn_frames++;
+            } else {
+                // Learning finished, use the new templates for template
+                // matching
+                get_eye_rect(mJavaDetectorEye, eyearea_right);
+                //Imgproc.rectangle(mRgba, ext_eyes_only_rect.tl(), ext_eyes_only_rect.br(),
+                //FACE_RECT_COLOR, 2);
+                match_eye(eyearea_right, teplateR, method, true);
+                match_eye(eyearea_left, teplateL, method, false);
             }
         }
 
-        Log.i(TAG, String.format("Detected %d faces \n", mappedRecognitions.size()));
+        Log.i(TAG, String.format("Detected %d faces", mappedRecognitions.size()));
+        Log.i(TAG, String.format("User bias: %f", userBias));
 
     }
 
@@ -688,6 +715,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
                     @Override
                     public void run() {
                         eVFOA = true;
+                        mPreviousState = mState;
                         Utils.bitmapToMat(mRGBrotatedBitmap, mRgba);
                         faceDetectTF();
                         faceEyeDetect();
@@ -727,7 +755,16 @@ public class OnGetImageListener implements OnImageAvailableListener {
                             //Initially assume studying from paper
                             if (ext_matchLoc != null && ext_eyes_only_rect != null) {
                                 double match = ext_matchLoc.y;
-                                double eye_area = ext_eyes_only_rect.y + ext_eyes_only_rect.height / 4;
+                                double eye_area = ext_eyes_only_rect.y;// + ext_eyes_only_rect.height / 8;
+                                org.opencv.core.Point match_p1 = new org.opencv.core.Point(0, ext_matchLoc.y);
+                                org.opencv.core.Point match_p2 = new org.opencv.core.Point(mPreviewWdith, ext_matchLoc.y);
+
+                                org.opencv.core.Point eye_p1 = new org.opencv.core.Point(0, ext_eyes_only_rect.y);
+                                org.opencv.core.Point eye_p2 = new org.opencv.core.Point(mPreviewWdith, ext_eyes_only_rect.y);
+                                Utils.bitmapToMat(mRGBrotatedBitmap, mRgba);
+                                Imgproc.line(mRgba, match_p1, match_p2, FACE_RECT_COLOR, 2);
+                                Imgproc.line(mRgba, eye_p1, eye_p2, TF_FACE_RECT_COLOR, 2);
+                                Utils.matToBitmap(mRgba, mRGBrotatedBitmap);
 
                                 if (mappedRecognitions.size() > 0) {
                                     if (ext_eyes_only_rect != null) {
@@ -766,10 +803,25 @@ public class OnGetImageListener implements OnImageAvailableListener {
                                     mResultsView.setText("Gaze angles\nYaw: ??"  +
                                             "\nPitch: ??" +
                                             "\nRoll: ??"  +
-                                            "\nState: " + mState.toString());
+                                            "\nState: " + mOutputState.toString());
                                 }
                             });
                         }
+
+                        if (mState != mPreviousState)
+                            tStart = System.currentTimeMillis();
+
+                        tDelta = System.currentTimeMillis() - tStart;
+                        Log.i(TAG, String.format("Time delta: %d;", tDelta));
+
+                        if (mState == State.NOT_THERE && tDelta > timeOutPresence) {
+                            mOutputState = mState;
+                        } else if (mState == State.NOT_PAYING_ATTENTION && tDelta > timeOutAttention) {
+                            mOutputState = mState;
+                        } else if (mState == State.PAYING_ATTENTION){
+                            mOutputState = mState;
+                        }
+
                         mWindow.setRGBBitmap(mRGBrotatedBitmap);
                         mIsComputing = false;
                     }
