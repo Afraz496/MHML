@@ -33,7 +33,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".HeartBeatService"/>
+        <service 
+            android:name=".HeartBeatService"
+            android:enabled="true">
+        </service>
+        <receiver
+            android:name=".HeartBeatBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped">
+            <intent-filter>
+                <action android:name="com.testingwatch.RestartSensor"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

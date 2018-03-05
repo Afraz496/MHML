@@ -1,6 +1,7 @@
 package com.studybuddy.testingwatch;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -14,6 +15,9 @@ import android.util.Log;
 import android.view.View;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.wearable.CapabilityClient;
@@ -37,6 +41,14 @@ public class HeartBeatService extends Service implements SensorEventListener, Da
     private static final String HR_PATH = "/heartrate";
     private OnChangeListener onChangeListener;
     private GoogleApiClient mGoogleApiClient;
+    public int counter = 0;
+    public HeartBeatService(Context applicationContext){
+        super();
+        Log.i("HERE","here I am");
+    }
+
+    public HeartBeatService(){
+    }
 
     // interface to pass a heartbeat value to the implementing class
     public interface OnChangeListener {
@@ -53,6 +65,45 @@ public class HeartBeatService extends Service implements SensorEventListener, Da
             listener.onValueChanged(currentValue);
         }
 
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId){
+        super.onStartCommand(intent,flags,startId);
+        startTimer();
+        return START_STICKY;
+    }
+
+    private Timer timer;
+    private TimerTask timerTask;
+
+    long oldTime = 0;
+    public void startTimer(){
+        //set a new timer
+        timer = new Timer();
+
+        //intialize the timer tasks job
+        initalizeTimerTask();
+
+        //schedule the timer to wake up every second
+        timer.schedule(timerTask,1000,1000);
+
+    }
+
+    public void initalizeTimerTask(){
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Log.i("in Timer","in timer ++++"+(counter++));
+            }
+        };
+    }
+    public void stoptimertask() {
+        //stop the timer, if it's not already null
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
 
 
@@ -80,6 +131,9 @@ public class HeartBeatService extends Service implements SensorEventListener, Da
         super.onDestroy();
         mSensorManager.unregisterListener(this);
         Log.d(LOG_TAG," sensor unregistered");
+        Intent broadcastIntent = new Intent("com.testingwatch.RestartSensor");
+        sendBroadcast(broadcastIntent);
+        stoptimertask();
     }
 
     /**
@@ -119,10 +173,10 @@ public class HeartBeatService extends Service implements SensorEventListener, Da
 
 
 
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int i) {
-            Log.d(LOG_TAG, "onAccuracyChanged - accuracy: " + i);
-        }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+        Log.d(LOG_TAG, "onAccuracyChanged - accuracy: " + i);
+    }
 
     /**
      * This function sends the HR data to a companion app in the same project on an android phone,
