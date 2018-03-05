@@ -6,23 +6,35 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
+
 import java.util.List;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.wearable.CapabilityClient;
+import com.google.android.gms.wearable.CapabilityInfo;
+import com.google.android.gms.wearable.DataClient;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataItem;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.common.data.FreezableUtils;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Wearable;
 
-public class HeartBeatService extends Service implements SensorEventListener {
+public class HeartBeatService extends Service implements SensorEventListener, DataClient.OnDataChangedListener, CapabilityClient.OnCapabilityChangedListener {
 
     private SensorManager mSensorManager;
     private int currentValue=0;
     private static final String LOG_TAG = "MyHeart";
     private IBinder binder = new HeartBeatServiceBinder();
+    private static final String HR_PATH = "/heartrate";
     private OnChangeListener onChangeListener;
     private GoogleApiClient mGoogleApiClient;
 
@@ -90,7 +102,16 @@ public class HeartBeatService extends Service implements SensorEventListener {
                 if(onChangeListener!=null) {
                     Log.d(LOG_TAG,"sending new value to listener: " + newValue);
                     onChangeListener.onValueChanged(newValue);
-                    sendMessageToHandheld(Integer.toString(newValue));
+                    final PutDataMapRequest putRequest = PutDataMapRequest.create(HR_PATH);
+                    final DataMap map = putRequest.getDataMap();
+                    map.putInt("Heart Rate", currentValue);
+
+                    Wearable.getDataClient(this).putDataItem(putRequest.asPutDataRequest()).addOnSuccessListener(new OnSuccessListener<DataItem>() {
+                        @Override
+                        public void onSuccess(DataItem dataItem) {
+                            Log.i("com.testingwatch","Successfully sending data");
+                        }
+                    });
                 }
             }
         }
@@ -108,28 +129,22 @@ public class HeartBeatService extends Service implements SensorEventListener {
      * connected to the Android Wear Device.
      */
 
+    public void onDataChanged(@NonNull DataEventBuffer dataEventBuffer) {
 
-    private void sendMessageToHandheld(final String message) {
-
-        if (mGoogleApiClient == null)
-            return;
-
-        Log.d(LOG_TAG, "sending a message to handheld: " + message);
-
-        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-            @Override
-            public void onResult(NodeApi.GetConnectedNodesResult result) {
-                final List<Node> nodes = result.getNodes();
-                if (nodes != null) {
-                    for (int i = 0; i < nodes.size(); i++) {
-                        final Node node = nodes.get(i);
-                        Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), message, null);
-                    }
-                }
+        final List<DataEvent> events = FreezableUtils.freezeIterable(dataEventBuffer);
+        for(DataEvent event : events) {
+            final Uri uri = event.getDataItem().getUri();
+            final String path = uri!=null ? uri.getPath() : null;
+            if(HR_PATH.equals(path)) {
+                final DataMap map = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
             }
-        });
-
+        }
 
     }
+
+    @Override
+    public void onCapabilityChanged(@NonNull CapabilityInfo capabilityInfo) {
+
+    }
+
 }
