@@ -1,0 +1,7 @@
+#Tue Mar 06 20:37:52 GMT 2018
+base.0=/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_fc9eed5cad31f39a62b739d6e599d0cc73c80922
+renamed.1=classes2.dex
+renamed.0=classes.dex
+file.1=/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_b33f4923f0b4f71a68362ce350b367807652dc09/classes.dex
+base.1=/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_b33f4923f0b4f71a68362ce350b367807652dc09
+file.0=/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_fc9eed5cad31f39a62b739d6e599d0cc73c80922/classes.dex

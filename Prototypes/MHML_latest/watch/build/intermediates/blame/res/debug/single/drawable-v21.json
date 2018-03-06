@@ -1,0 +1,66 @@
+[
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/abc_btn_colored_material.xml",
+        "source": "/home/human/.android/build-cache/964c54e385607b034c2976fcb727012c10e2f04c/output/res/drawable-v21/abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/notification_action_background.xml",
+        "source": "/home/human/.android/build-cache/a04df419352b3d443f5d5bd50c8d34b4ee2088f4/output/res/drawable-v21/notification_action_background.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/ws_ic_expand_more_white_22.xml",
+        "source": "/home/human/.android/build-cache/4580ca0c95010a794d5b0dfa6bc13406d7427de6/output/res/drawable-v21/ws_ic_expand_more_white_22.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/ic_cc_clear.xml",
+        "source": "/home/human/.android/build-cache/7f0ffa2d8e1298f6450606ab7a3fb9af92978cf5/output/res/drawable-v21/ic_cc_clear.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/open_on_phone.xml",
+        "source": "/home/human/.android/build-cache/7f0ffa2d8e1298f6450606ab7a3fb9af92978cf5/output/res/drawable-v21/open_on_phone.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/accept_deny_dialog_positive_bg.xml",
+        "source": "/home/human/.android/build-cache/7f0ffa2d8e1298f6450606ab7a3fb9af92978cf5/output/res/drawable-v21/accept_deny_dialog_positive_bg.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/preference_wrapped_icon.xml",
+        "source": "/home/human/.android/build-cache/7f0ffa2d8e1298f6450606ab7a3fb9af92978cf5/output/res/drawable-v21/preference_wrapped_icon.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/generic_confirmation_animation.xml",
+        "source": "/home/human/.android/build-cache/7f0ffa2d8e1298f6450606ab7a3fb9af92978cf5/output/res/drawable-v21/generic_confirmation_animation.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/accept_deny_dialog_negative_bg.xml",
+        "source": "/home/human/.android/build-cache/7f0ffa2d8e1298f6450606ab7a3fb9af92978cf5/output/res/drawable-v21/accept_deny_dialog_negative_bg.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/ic_cc_checkmark.xml",
+        "source": "/home/human/.android/build-cache/7f0ffa2d8e1298f6450606ab7a3fb9af92978cf5/output/res/drawable-v21/ic_cc_checkmark.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/generic_confirmation.xml",
+        "source": "/home/human/.android/build-cache/7f0ffa2d8e1298f6450606ab7a3fb9af92978cf5/output/res/drawable-v21/generic_confirmation.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/ws_switch_thumb_material_anim.xml",
+        "source": "/home/human/.android/build-cache/4580ca0c95010a794d5b0dfa6bc13406d7427de6/output/res/drawable-v21/ws_switch_thumb_material_anim.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/abc_action_bar_item_background_material.xml",
+        "source": "/home/human/.android/build-cache/964c54e385607b034c2976fcb727012c10e2f04c/output/res/drawable-v21/abc_action_bar_item_background_material.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/abc_edit_text_material.xml",
+        "source": "/home/human/.android/build-cache/964c54e385607b034c2976fcb727012c10e2f04c/output/res/drawable-v21/abc_edit_text_material.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/open_on_phone_animation.xml",
+        "source": "/home/human/.android/build-cache/7f0ffa2d8e1298f6450606ab7a3fb9af92978cf5/output/res/drawable-v21/open_on_phone_animation.xml"
+    },
+    {
+        "merged": "/home/human/AndroidStudioPr/MHML_latest/watch/build/intermediates/res/merged/debug/drawable-v21/ic_expand_more_white_22.xml",
+        "source": "/home/human/.android/build-cache/7f0ffa2d8e1298f6450606ab7a3fb9af92978cf5/output/res/drawable-v21/ic_expand_more_white_22.xml"
+    }
+]
