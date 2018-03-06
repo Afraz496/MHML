@@ -1,0 +1,1 @@
+21:39:39.616 [Task worker for ':' Thread 2] WARN  o.a.i.p.ModelValidator:81 - The component MainActivity_ is not registered in the AndroidManifest.xml file.
