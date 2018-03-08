@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -26,7 +27,6 @@ import java.io.IOException;
 public class Recorder extends AppCompatActivity {
 
     private static final String LOG_TAG = "AudioRecordTest";
-    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private static String mFileName = null;
 
     private RecordButton mRecordButton = null;
@@ -45,22 +45,6 @@ public class Recorder extends AppCompatActivity {
     double amp;
     double dBvalue;
     double refamp = 1;
-
-    // Requesting permission to RECORD_AUDIO
-    private boolean permissionToRecordAccepted = false;
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                break;
-        }
-        if (!permissionToRecordAccepted ) finish();
-
-    }
 
     private void onRecord(boolean start) {
         if (start) {
@@ -99,17 +83,23 @@ public class Recorder extends AppCompatActivity {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         //Check if the device supports UNPROCESSED sound input, if the device does not
         //then it will return null
-        if(audioManager.getProperty(AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED) != null){
-            mRecorder.setAudioSource(MediaRecorder.AudioSource.UNPROCESSED);
-            //put A weighting algorithm here!
-            Toast.makeText(Recorder.this, "UNPROCESSED", Toast.LENGTH_LONG).show();
-
+        if(Build.VERSION.SDK_INT >= 24) {
+            if (audioManager.getProperty(AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED) != null) {
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.UNPROCESSED);
+                //put A weighting algorithm here!
+                Toast.makeText(Recorder.this, "UNPROCESSED", Toast.LENGTH_LONG).show();
+            }
+            else{
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+                Toast.makeText(Recorder.this, "VOICE_RECOGNITION", Toast.LENGTH_LONG).show();
+            }
         }
         ///Check if it returns null, if it does then just use VOICE_RECOGNITION
         else{
             mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
             Toast.makeText(Recorder.this, "VOICE_RECOGNITION", Toast.LENGTH_LONG).show();
         }
+
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mRecorder.setOutputFile(mFileName);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
@@ -121,10 +111,10 @@ public class Recorder extends AppCompatActivity {
         }
 
         mRecorder.start();
+        Display.setText(String.valueOf(mRecorder.getMaxAmplitude()));
     }
 
     private void stopRecording() {
-        Display.setText(String.valueOf(mRecorder.getMaxAmplitude()));
         mRecorder.stop();
         mRecorder.release();
         mRecorder = null;
@@ -181,8 +171,6 @@ public class Recorder extends AppCompatActivity {
 
         mFileName = getExternalCacheDir().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
-
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
         LinearLayout ll = new LinearLayout(this);
         mRecordButton = new RecordButton(this);

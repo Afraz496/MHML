@@ -22,7 +22,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".SecondActivity" />
-        <activity android:name=".Recorder"></activity>
+        <activity android:name=".Recorder" />
+        <activity android:name=".ServiceDemo" />
+        <service android:name=".TheService"/>
     </application>
 
 </manifest>
