@@ -16,7 +16,7 @@ To install the application run an ADB installation on Android Studio with your p
 
 ## Components
 - Front End Design with User Interface
-- (Smartwatch for Continuous Heart Rate Monitoring)[https://github.com/Afrazinator/MHML/blob/master/Prototypes/TestingWatch3/READMEWATCH.md]
+- [Smartwatch for Continuous Heart Rate Monitoring](https://github.com/Afrazinator/MHML/blob/master/Prototypes/TestingWatch3/READMEWATCH.md)
 - Continuous Ambient Noise Monitoring
 - Computer Vision
 
