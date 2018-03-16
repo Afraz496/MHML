@@ -1,4 +1,4 @@
-package com.example.watch;
+package com.beraldo.hpe;
 
 import android.app.Service;
 import android.content.Context;
@@ -12,7 +12,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.View;
 
 import java.util.List;
 import java.util.Timer;
@@ -32,15 +31,22 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Wearable;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class HeartBeatService extends Service implements SensorEventListener, DataClient.OnDataChangedListener, CapabilityClient.OnCapabilityChangedListener {
 
     private SensorManager mSensorManager;
     private int currentValue=0;
     private static final String LOG_TAG = "MyHeart";
     private IBinder binder = new HeartBeatServiceBinder();
+    private static final String DB_TAG = "Start Condition";
     private static final String HR_PATH = "/heartrate";
     private OnChangeListener onChangeListener;
     private GoogleApiClient mGoogleApiClient;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference StartConditionRef = database.getReference("StartCondition");
+    DatabaseReference HRRef = database.getReference("HR");
     public int counter = 0;
     public HeartBeatService(Context applicationContext){
         super();
@@ -139,7 +145,6 @@ public class HeartBeatService extends Service implements SensorEventListener, Da
     /**
      *The onSensorChanged function is the main logic of the heart beat sensor. It Waits for new values
      * and then displays them on the log in Android Studio.
-     * TODO: Create a new function that can send it to a companion app.
      */
 
     @Override
@@ -148,25 +153,24 @@ public class HeartBeatService extends Service implements SensorEventListener, Da
         if(sensorEvent.sensor.getType()==Sensor.TYPE_HEART_RATE && sensorEvent.values.length>0 ) {
             int newValue = Math.round(sensorEvent.values[0]);
             Log.d(LOG_TAG,sensorEvent.sensor.getName() + " changed to value=: " + newValue);
-            // only do something if the value differs from the value before and the value is not 0.
-            if(currentValue != newValue && newValue!=0) {
-                // save the new value
-                currentValue = newValue;
-                // send the value to the listener
-                if(onChangeListener!=null) {
-                    Log.d(LOG_TAG,"sending new value to listener: " + newValue);
-                    onChangeListener.onValueChanged(newValue);
-                    final PutDataMapRequest putRequest = PutDataMapRequest.create(HR_PATH);
-                    final DataMap map = putRequest.getDataMap();
-                    map.putInt("Heart Rate", currentValue);
+        // only do something if the value differs from the value before and the value is not 0.
+            // save the new value
+            currentValue = newValue;
+            HRRef.setValue(currentValue);
+            // send the value to the listener
+            if(onChangeListener!=null) {
+                Log.d(LOG_TAG,"sending new value to listener: " + newValue);
+                onChangeListener.onValueChanged(newValue);
+                final PutDataMapRequest putRequest = PutDataMapRequest.create(HR_PATH);
+                final DataMap map = putRequest.getDataMap();
+                map.putInt("Heart Rate", currentValue);
 
-                    Wearable.getDataClient(this).putDataItem(putRequest.asPutDataRequest()).addOnSuccessListener(new OnSuccessListener<DataItem>() {
-                        @Override
-                        public void onSuccess(DataItem dataItem) {
-                            Log.i("com.testingwatch","Successfully sending data");
-                        }
-                    });
-                }
+                Wearable.getDataClient(this).putDataItem(putRequest.asPutDataRequest()).addOnSuccessListener(new OnSuccessListener<DataItem>() {
+                    @Override
+                    public void onSuccess(DataItem dataItem) {
+                        Log.i("com.testingwatch","Successfully sending data");
+                    }
+                });
             }
         }
     }

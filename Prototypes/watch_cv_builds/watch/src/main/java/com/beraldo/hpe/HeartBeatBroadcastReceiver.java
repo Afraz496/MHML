@@ -1,4 +1,4 @@
-package com.example.watch;
+package com.example.hpe;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
